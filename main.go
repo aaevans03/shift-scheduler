@@ -25,10 +25,13 @@ func getHome(writer http.ResponseWriter, request *http.Request) {
 func main() {
 	mux := http.NewServeMux()
 
+	fileServer := http.FileServer(http.Dir("./static/"))
+	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
+
 	mux.HandleFunc("GET /{$}", getHome)
 
-	log.Print("starting server on http://localhost:4000")
+	log.Print("starting server on http://localhost:4001")
 
-	err := http.ListenAndServe(":4000", mux)
+	err := http.ListenAndServe(":4001", mux)
 	log.Fatal(err)
 }
