@@ -8,14 +8,19 @@ import (
 
 func getHome(writer http.ResponseWriter, request *http.Request) {
 
-	ts, err := template.ParseFiles("./templates/index.html")
+	files := []string{
+		"./templates/base.html",
+		"./templates/schedule.html",
+	}
+
+	ts, err := template.ParseFiles(files...)
 	if err != nil {
 		log.Print(err.Error())
 		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
-	err = ts.Execute(writer, nil)
+	err = ts.ExecuteTemplate(writer, "base", nil)
 	if err != nil {
 		log.Print(err.Error())
 		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
