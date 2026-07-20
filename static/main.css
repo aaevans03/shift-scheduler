@@ -3,29 +3,45 @@
 }
 
 body {
-    max-width: 900px;
     margin: 100px 100px;
     width: 80%;
 }
 
-table {
-    width: 100%;
+.card {
+    background-color: rgb(247, 247, 255);
+    padding: 25px;
+    border-radius: 15px;
     margin-bottom: 40px;
-    border: 1px solid black;
+}
+
+table {
+    table-layout: fixed;
+    width: 100%;
     border-spacing: 0;
 }
 
-table .day-col {
-    width: 5%;
+.day-col {
+    width: 50px;
 }
 
-table .hour-col {
-    width: 9.5%;
-    border-left: 1px solid black;
+.total-col {
+    width: 75px;
+}
+
+.hour-label {
+    border-left: 1px solid rgb(176, 176, 216);
+    text-align: left;
+    padding: 7px 5px;
+}
+
+.day-name {
+    color:rgb(74, 74, 133);
+    text-align: right;
+    padding-right: 6px;
 }
 
 td {
-    border-left: 1px solid black;
+    border-left: 1px solid rgb(176, 176, 216);
     padding: 0;
 }
 
@@ -37,16 +53,22 @@ td {
 
 .hour-blocks div {
     flex: 1;
-    height: 30px;
+    height: 35px;
     box-sizing: border-box;
 }
 
 .active-block {
-    background-color: rgb(62, 62, 255);
-    border: 1px solid rgb(132, 132, 255);
+    background-color: rgb(17, 17, 185);
+    border: 1px solid rgb(91, 91, 214);
 }
 
 .inactive-block {
-    background-color: rgb(224, 224, 224);
-    border: 1px solid rgb(231, 231, 231);
+    background-color: rgb(224, 224, 255);
+    border: 1px solid rgb(231, 231, 255);
+}
+
+.total {
+    text-align: left;
+    padding-left: 6px;
+    color:rgb(74, 74, 133);
 }
