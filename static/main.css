@@ -49,6 +49,8 @@ td {
     display: flex;
     flex-direction: row;
     width: 100%;
+    user-select: none;
+    touch-action: none;
 }
 
 .hour-blocks div {
@@ -57,15 +59,16 @@ td {
     box-sizing: border-box;
 }
 
-.active-block {
+.block {
+    background-color: rgb(224, 224, 255);
+    border: 1px solid rgb(231, 231, 255);
+}
+
+.active {
     background-color: rgb(17, 17, 185);
     border: 1px solid rgb(91, 91, 214);
 }
 
-.inactive-block {
-    background-color: rgb(224, 224, 255);
-    border: 1px solid rgb(231, 231, 255);
-}
 
 .total {
     text-align: left;
