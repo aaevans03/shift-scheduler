@@ -53,6 +53,7 @@ func getHome(writer http.ResponseWriter, request *http.Request) {
 	files := []string{
 		"./templates/base.html",
 		"./templates/schedule.html",
+		"./templates/week-view.html",
 	}
 
 	template, err := template.ParseFiles(files...)
