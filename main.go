@@ -8,8 +8,9 @@ import (
 )
 
 type Block struct {
-	Active bool
-	Time   string
+	Active  bool
+	DayName string
+	Time    string
 }
 
 type Hour struct {
@@ -17,8 +18,9 @@ type Hour struct {
 }
 
 type Day struct {
-	DayName string
-	Hours   []Hour
+	DayName   string
+	Hours     []Hour
+	TotalTime float32
 }
 
 type Week struct {
@@ -37,11 +39,11 @@ func blankWeek() Week {
 		for hour := 800; hour < 1800; hour += 100 {
 			var blockList []Block
 			for minutes := 0; minutes <= 50; minutes += 10 {
-				blockList = append(blockList, Block{false, strconv.Itoa(hour + minutes)})
+				blockList = append(blockList, Block{false, value, strconv.Itoa(hour + minutes)})
 			}
 			hourList = append(hourList, Hour{blockList})
 		}
-		week = append(week, Day{value, hourList})
+		week = append(week, Day{value, hourList, 0})
 	}
 
 	return Week{week}
@@ -70,6 +72,23 @@ func getHome(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
+func postSubmit(writer http.ResponseWriter, request *http.Request) {
+	err := request.ParseForm()
+	if err != nil {
+		http.Error(writer, "Invalid form data", http.StatusBadRequest)
+	}
+
+	selectedBlocks := request.Form["selectedBlocks"]
+
+	log.Print("POST ", selectedBlocks)
+
+	// TODO: Schedule validation
+	// Save schedule to DB
+	// Re-send schedule to frontend?
+	// Pop-up that says it was a success
+
+}
+
 func main() {
 	mux := http.NewServeMux()
 
@@ -77,6 +96,7 @@ func main() {
 	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
 
 	mux.HandleFunc("GET /{$}", getHome)
+	mux.HandleFunc("POST /submit", postSubmit)
 
 	log.Print("starting server on http://localhost:4001")
 

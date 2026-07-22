@@ -5,6 +5,7 @@
 body {
     margin: 100px 100px;
     width: 80%;
+    max-width: 1000px;
 }
 
 .card {

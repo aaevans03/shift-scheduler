@@ -7,10 +7,24 @@
  * 4. Submit -> info is sent to the server
  */
 
-let isPainting = false;
-let toggleOn = null;
+const inputContainer = document.querySelector('#form-selected-blocks');
 
-const allBlocks = document.querySelectorAll('.block');
+function blockValue(block) {
+    return `${block.dataset.day}:${block.dataset.time}`;
+}
+
+function updateSelectedInputs() {
+    inputContainer.innerHTML = '';
+
+    document.querySelectorAll('.block.active').forEach((block) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'selectedBlocks';
+        input.value = blockValue(block);
+
+        inputContainer.appendChild(input);
+    })
+}
 
 function toggleBlock(block) {
     if (toggleOn === true) {
@@ -18,7 +32,14 @@ function toggleBlock(block) {
     } else {
         block.classList.remove('active');
     }
+    
+    updateSelectedInputs();
 }
+
+
+let isPainting = false;
+let toggleOn = null;
+const allBlocks = document.querySelectorAll('.block');
 
 allBlocks.forEach((block) => {
     block.addEventListener('pointerdown', (event) => {
