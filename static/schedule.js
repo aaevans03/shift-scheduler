@@ -9,19 +9,14 @@
 
 const inputContainer = document.querySelector('#form-selected-blocks');
 
-function blockValue(block) {
-    return `${block.dataset.day}:${block.dataset.time}`;
-}
-
 function updateSelectedInputs() {
     inputContainer.innerHTML = '';
 
     document.querySelectorAll('.block.active').forEach((block) => {
         const input = document.createElement('input');
         input.type = 'hidden';
-        input.name = 'selectedBlocks';
-        input.value = blockValue(block);
-
+        input.name = block.dataset.day;
+        input.value = block.dataset.time;
         inputContainer.appendChild(input);
     })
 }
@@ -63,3 +58,5 @@ document.addEventListener('pointerup', () => {
     isPainting = false;
     toggleOn = null;
 })
+
+updateSelectedInputs();

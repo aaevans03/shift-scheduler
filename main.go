@@ -4,6 +4,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"reflect"
+	"slices"
 	"strconv"
 )
 
@@ -27,8 +29,16 @@ type Week struct {
 	Days []Day
 }
 
-func blankWeek() Week {
-	dayNames := []string{"Mon", "Tues", "Wed", "Thurs", "Fri"}
+type Schedule struct {
+	SubmittedWeek   Week
+	Approved        bool
+	ApprovalMessage string
+}
+
+var userSchedule Schedule
+var dayNames = []string{"Mon", "Tues", "Wed", "Thurs", "Fri"}
+
+func initializeSchedule() Week {
 
 	// Loop through all days
 	var week []Day
@@ -46,11 +56,19 @@ func blankWeek() Week {
 		week = append(week, Day{value, hourList, 0})
 	}
 
+	userSchedule = Schedule{Week{week}, true, ""}
 	return Week{week}
 }
 
 func getHome(writer http.ResponseWriter, request *http.Request) {
-	data := blankWeek()
+
+	var data Week
+
+	if reflect.ValueOf(userSchedule).IsZero() {
+		data = initializeSchedule()
+	} else {
+		data = userSchedule.SubmittedWeek
+	}
 
 	files := []string{
 		"./templates/base.html",
@@ -72,18 +90,44 @@ func getHome(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
+func updateWeek(selected map[string][]string) {
+
+	for dayIndex := range userSchedule.SubmittedWeek.Days {
+		day := &userSchedule.SubmittedWeek.Days[dayIndex]
+
+		for hourIndex := range day.Hours {
+			hour := &day.Hours[hourIndex]
+
+			for blockIndex := range hour.Blocks {
+				block := &hour.Blocks[blockIndex]
+
+				block.Active = slices.Contains(selected[day.DayName], block.Time)
+			}
+		}
+	}
+	userSchedule.Approved = false
+}
+
 func postSubmit(writer http.ResponseWriter, request *http.Request) {
 	err := request.ParseForm()
 	if err != nil {
 		http.Error(writer, "Invalid form data", http.StatusBadRequest)
+		return
 	}
 
-	selectedBlocks := request.Form["selectedBlocks"]
+	// Parse validations
+	selected := map[string][]string{
+		"Mon":   request.Form["Mon"],
+		"Tues":  request.Form["Tues"],
+		"Wed":   request.Form["Wed"],
+		"Thurs": request.Form["Thurs"],
+		"Fri":   request.Form["Fri"],
+	}
 
-	log.Print("POST ", selectedBlocks)
+	updateWeek(selected)
 
 	// TODO: Schedule validation
-	// Save schedule to DB
+	// Save schedule in server
 	// Re-send schedule to frontend?
 	// Pop-up that says it was a success
 

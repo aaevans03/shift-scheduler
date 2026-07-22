@@ -6,7 +6,10 @@
                 <td>
                     <div class="hour-blocks">
                         {{ range .Blocks }}
-                            <div class="block" data-time="{{ .Time }}" data-day="{{ .DayName }}"></div>
+                            <div
+                                class="block {{ if .Active }}active{{ end }}"
+                                data-time="{{ .Time }}"
+                                data-day="{{ .DayName }}"></div>
                         {{ end }}
                     </div>
                 </td>
