@@ -12,7 +12,7 @@ import (
 type Block struct {
 	Active  bool
 	DayName string
-	Time    string
+	Time    int
 }
 
 type Day struct {
@@ -43,7 +43,7 @@ func initializeSchedule() Week {
 
 		// Loop through all minutes in a workday
 		for minutes := 480; minutes < 1080; minutes += 10 {
-			hourList = append(hourList, Block{false, value, strconv.Itoa(minutes)})
+			hourList = append(hourList, Block{false, value, minutes})
 		}
 		week = append(week, Day{value, hourList, 0})
 	}
@@ -82,7 +82,29 @@ func getHome(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-func updateWeek(selected map[string][]string) {
+func convertSliceStrToInt(stringSlice []string) []int {
+
+	var convertedDay []int
+
+	for _, time := range stringSlice {
+		convertedTime, err := strconv.Atoi(time)
+		if err != nil {
+			log.Print("error")
+		}
+		convertedDay = append(convertedDay, convertedTime)
+	}
+	return convertedDay
+}
+
+func validateSchedule(selected map[string][]int) {
+	// TODO: implement this
+	// Weekly total is 20-40 hours (sum up all blocks)
+	// Max daily work: 9 hours
+	// Min daily shift length: 3 hours
+}
+
+func updateWeek(selected map[string][]int) {
+	// TODO: If schedule is already approved, you can't edit it, unless you reset it
 
 	for dayIndex := range userSchedule.SubmittedWeek.Days {
 		day := &userSchedule.SubmittedWeek.Days[dayIndex]
@@ -104,18 +126,20 @@ func postSubmit(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	// Parse validations
-	selected := map[string][]string{
-		"Mon":   request.Form["Mon"],
-		"Tues":  request.Form["Tues"],
-		"Wed":   request.Form["Wed"],
-		"Thurs": request.Form["Thurs"],
-		"Fri":   request.Form["Fri"],
+	selected := map[string][]int{
+		"Mon":   convertSliceStrToInt(request.Form["Mon"]),
+		"Tues":  convertSliceStrToInt(request.Form["Tues"]),
+		"Wed":   convertSliceStrToInt(request.Form["Wed"]),
+		"Thurs": convertSliceStrToInt(request.Form["Thurs"]),
+		"Fri":   convertSliceStrToInt(request.Form["Fri"]),
 	}
 
+	// Schedule validation
+	validateSchedule(selected)
+
+	// Update/save week in server after validation
 	updateWeek(selected)
 
-	// TODO: Schedule validation
-	// Save schedule in server
 	// Re-send schedule to frontend?
 	// Pop-up that says it was a success
 
@@ -129,6 +153,7 @@ func main() {
 
 	mux.HandleFunc("GET /{$}", getHome)
 	mux.HandleFunc("POST /submit", postSubmit)
+	// TODO: implement DELETE /submit endpoint
 
 	log.Print("starting server on http://localhost:4001")
 
