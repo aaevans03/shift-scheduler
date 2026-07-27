@@ -15,7 +15,7 @@ What is my attack plan here?
     - [X] Replace table content dynamically
         - On page open: Read from DB, send a schedule object back
     - [X] Submit the form without a page reload
-    - [ ] Time validation
-    - [ ] Rendering server-side validation errors
+    - [X] Time validation
+    - [X] Rendering server-side validation errors
         - Like error pop-ups
     - [ ] Status updates (approved/rejected banners, etc.)

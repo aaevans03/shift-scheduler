@@ -13,8 +13,8 @@
 </head>
 <body>
     <h1>Shift Scheduler</h1>
-    <span id="status"></span>
-        {{ template "schedule" . }}
+    {{ template "schedule" . }}
+    <div id="status-message" class="status-message hidden"></div>
 </body>
 </html>
 {{ end }}

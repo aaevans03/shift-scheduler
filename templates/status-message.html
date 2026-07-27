@@ -1,0 +1,10 @@
+{{ define "status-message" }}
+    <div id="status-message" class="status-message {{ .StatusType }}">
+        <strong>{{ .Message }}</strong>
+        <ul>
+            {{ range .Bullets }}
+                <li>{{ . }}</li>
+            {{ end }}
+        </ul>
+    </div>
+{{ end }}

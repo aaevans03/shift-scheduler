@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"math"
 	"slices"
 	"strconv"
 )
@@ -45,7 +47,7 @@ func initializeSchedule() Week {
 		week = append(week, Day{value, hourList, 0})
 	}
 
-	userSchedule = Schedule{Week{week}, true, ""}
+	userSchedule = Schedule{Week{week}, false, ""}
 	return Week{week}
 }
 
@@ -87,7 +89,13 @@ func calculateShiftLength(startTime int, times []int) int {
 	return shiftLength
 }
 
-func validateSchedule(selected map[string][]int) {
+func minutesToHours(minutes int) float64 {
+	return math.Round((float64(minutes)/60.0)*100.0) / 100
+}
+
+func validateSchedule(selected map[string][]int) []string {
+	findings := []string{}
+
 	totalTime := 0
 	for day, times := range selected {
 		dayTime := (len(times) * 10)
@@ -101,12 +109,20 @@ func validateSchedule(selected map[string][]int) {
 			length := calculateShiftLength(shiftStart, times)
 			if length < 180 {
 				log.Print("One shift must be at least 180 minutes long. A shift on ", day, " is: ", length)
+				findings = append(
+					findings,
+					fmt.Sprintf("<strong>%s</strong> has a shift of %.2f hours. Shifts must be at least 3 hours.", day, minutesToHours(length)),
+				)
 			}
 		}
 
 		// Max daily work: 9 hours
 		if dayTime > 540 {
 			log.Print("Daily time must not exceed 540 minutes. Minutes for ", day, ": ", dayTime)
+			findings = append(
+				findings,
+				fmt.Sprintf("<strong>%s</strong> has a total work time of length %.2f hours. Do not exceed 9 hours in one day.", day, minutesToHours(dayTime)),
+			)
 		}
 
 		totalTime += dayTime
@@ -115,12 +131,16 @@ func validateSchedule(selected map[string][]int) {
 	// Weekly total is 20-40 hours
 	if totalTime < 1200 || totalTime > 2400 {
 		log.Print("Total time per week must be between 1200 and 2400 minutes. Current minutes: ", totalTime)
+		findings = append(
+			findings,
+			fmt.Sprintf("Total work time of the week is %.2f hours. It must be 20-40 hours.", minutesToHours(totalTime)),
+		)
 	}
+
+	return findings
 }
 
 func updateWeek(selected map[string][]int) {
-	// TODO: If schedule is already approved, you can't edit it, unless you reset it
-
 	for dayIndex := range userSchedule.SubmittedWeek.Days {
 		day := &userSchedule.SubmittedWeek.Days[dayIndex]
 

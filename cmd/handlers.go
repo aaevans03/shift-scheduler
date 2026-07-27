@@ -7,6 +7,12 @@ import (
 	"text/template"
 )
 
+type StatusMessage struct {
+	StatusType string
+	Message    string
+	Bullets    []string
+}
+
 func getHome(writer http.ResponseWriter, request *http.Request) {
 
 	var data Week
@@ -53,14 +59,35 @@ func postSubmit(writer http.ResponseWriter, request *http.Request) {
 		"Fri":   convertSliceStrToInt(request.Form["Fri"]),
 	}
 
+	findings := []string{}
+
 	// Schedule validation
-	validateSchedule(selected)
+	findings = append(findings, validateSchedule(selected)...)
 
-	// Update/save week in server after validation
-	updateWeek(selected)
+	var data StatusMessage
 
-	// TODO:
-	// Re-send schedule to frontend?
-	// Pop-up that says it was a success
+	if userSchedule.Approved == true {
+		data = StatusMessage{"failure", "Failure", []string{"Schedule has already been approved. Reset to submit a new one"}}
+	} else if len(findings) > 0 {
+		data = StatusMessage{"failure", "Failure", findings}
+	} else {
+		// Update/save week in server after validation
+		updateWeek(selected)
+		data = StatusMessage{"success", "Success", []string{"Schedule has been submitted for admin review"}}
+	}
 
+	template, err := template.ParseFiles("./templates/status-message.html")
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	err = template.ExecuteTemplate(writer, "status-message", data)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	// TODO: Re-send schedule to frontend?
 }
