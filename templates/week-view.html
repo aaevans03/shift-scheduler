@@ -2,19 +2,17 @@
     {{ range .Days }}
         <tr>
             <th class="day-name">{{ .DayName }}</th>
-            {{ range .Hours }}
-                <td>
-                    <div class="hour-blocks">
-                        {{ range .Blocks }}
-                            <div
-                                class="block {{ if .Active }}active{{ end }}"
-                                data-time="{{ .Time }}"
-                                data-day="{{ .DayName }}"></div>
-                        {{ end }}
-                    </div>
-                </td>
-            {{ end }}
-            <td class="total">0.00 hrs</td>
+            <td colspan="10">
+                <div class="hour-blocks">
+                    {{ range .Hours }}
+                        <div
+                            class="block {{ if .Active }}active{{ end }}"
+                            data-time="{{ .Time }}"
+                            data-day="{{ .DayName }}"></div>
+                    {{ end }}
+                </div>
+            </td>
+            <!-- <td class="total">0.00 hrs</td> -->
         </tr>
     {{ end }}
 {{ end }}

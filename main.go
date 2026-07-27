@@ -15,13 +15,9 @@ type Block struct {
 	Time    string
 }
 
-type Hour struct {
-	Blocks []Block // 6 blocks to an hour
-}
-
 type Day struct {
 	DayName   string
-	Hours     []Hour
+	Hours     []Block
 	TotalTime float32
 }
 
@@ -43,15 +39,11 @@ func initializeSchedule() Week {
 	// Loop through all days
 	var week []Day
 	for _, value := range dayNames {
-		var hourList []Hour
+		var hourList []Block
 
-		// Loop through all hours
-		for hour := 800; hour < 1800; hour += 100 {
-			var blockList []Block
-			for minutes := 0; minutes <= 50; minutes += 10 {
-				blockList = append(blockList, Block{false, value, strconv.Itoa(hour + minutes)})
-			}
-			hourList = append(hourList, Hour{blockList})
+		// Loop through all minutes in a workday
+		for minutes := 480; minutes < 1080; minutes += 10 {
+			hourList = append(hourList, Block{false, value, strconv.Itoa(minutes)})
 		}
 		week = append(week, Day{value, hourList, 0})
 	}
@@ -98,11 +90,7 @@ func updateWeek(selected map[string][]string) {
 		for hourIndex := range day.Hours {
 			hour := &day.Hours[hourIndex]
 
-			for blockIndex := range hour.Blocks {
-				block := &hour.Blocks[blockIndex]
-
-				block.Active = slices.Contains(selected[day.DayName], block.Time)
-			}
+			hour.Active = slices.Contains(selected[day.DayName], hour.Time)
 		}
 	}
 	userSchedule.Approved = false
