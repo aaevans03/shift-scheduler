@@ -63,11 +63,59 @@ func convertSliceStrToInt(stringSlice []string) []int {
 	return convertedDay
 }
 
+func calculateShiftStartTimes(times []int) []int {
+	shiftStartTimes := []int{}
+
+	for _, time := range times {
+		if !slices.Contains(times, time-10) {
+			shiftStartTimes = append(shiftStartTimes, time)
+		}
+	}
+	return shiftStartTimes
+}
+
+func calculateShiftLength(startTime int, times []int) int {
+	shiftLength := 10
+	curTime := startTime
+	for {
+		curTime += 10
+		if !slices.Contains(times, curTime) {
+			break
+		}
+		shiftLength += 10
+	}
+	return shiftLength
+}
+
 func validateSchedule(selected map[string][]int) {
-	// TODO: implement this
-	// Weekly total is 20-40 hours (sum up all blocks)
-	// Max daily work: 9 hours
-	// Min daily shift length: 3 hours
+	totalTime := 0
+	for day, times := range selected {
+		dayTime := (len(times) * 10)
+
+		shiftStartTimes := calculateShiftStartTimes(times)
+
+		log.Print("Shift start times for ", day, ": ", shiftStartTimes)
+
+		// Calculate shift lengths
+		for _, shiftStart := range shiftStartTimes {
+			length := calculateShiftLength(shiftStart, times)
+			if length < 180 {
+				log.Print("One shift must be at least 180 minutes long. A shift on ", day, " is: ", length)
+			}
+		}
+
+		// Max daily work: 9 hours
+		if dayTime > 540 {
+			log.Print("Daily time must not exceed 540 minutes. Minutes for ", day, ": ", dayTime)
+		}
+
+		totalTime += dayTime
+	}
+
+	// Weekly total is 20-40 hours
+	if totalTime < 1200 || totalTime > 2400 {
+		log.Print("Total time per week must be between 1200 and 2400 minutes. Current minutes: ", totalTime)
+	}
 }
 
 func updateWeek(selected map[string][]int) {
