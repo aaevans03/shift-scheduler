@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"reflect"
 	"slices"
 	"strconv"
 )
@@ -49,6 +50,17 @@ func initializeSchedule() Week {
 
 	userSchedule = Schedule{Week{week}, false, ""}
 	return Week{week}
+}
+
+func getScheduleFromMemory() Week {
+	var data Week
+
+	if reflect.ValueOf(userSchedule).IsZero() {
+		data = initializeSchedule()
+	} else {
+		data = userSchedule.SubmittedWeek
+	}
+	return data
 }
 
 func convertSliceStrToInt(stringSlice []string) []int {

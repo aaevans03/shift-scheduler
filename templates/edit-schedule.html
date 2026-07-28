@@ -1,9 +1,11 @@
-{{ define "schedule" }}
+{{ define "edit-schedule" }}
 <form
+    id="edit-schedule"
     hx-post="/submit"
     hx-target="#status-message"
     hx-swap="outerHTML"
 >
+    <script defer src="/static/schedule.js"></script>
     <div class="card">
         <table>
             <colgroup>

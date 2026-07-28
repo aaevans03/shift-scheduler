@@ -1,0 +1,43 @@
+{{ define "view-schedule" }}
+<div id="view-schedule">
+    <div class="card">
+        <table>
+            <colgroup>
+                <col class="day-col">
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col class="total-col">
+            </colgroup>
+            <tr class="header-row">
+                <th></th>
+                <th class="hour-label">8am</th>
+                <th class="hour-label">9am</th>
+                <th class="hour-label">10am</th>
+                <th class="hour-label">11am</th>
+                <th class="hour-label">12pm</th>
+                <th class="hour-label">1pm</th>
+                <th class="hour-label">2pm</th>
+                <th class="hour-label">3pm</th>
+                <th class="hour-label">4pm</th>
+                <th class="hour-label">5pm</th>
+                <th></th>
+            </tr>
+            {{ template "week-view" . }}
+        </table>
+    </div>
+    <div id="form-selected-blocks"></div>
+    <button
+        hx-get="/edit"
+        hx-target="#view-schedule"
+        hx-swap="outerHTML"
+    >Edit</button>
+</div>
+{{ end }}

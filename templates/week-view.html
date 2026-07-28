@@ -1,12 +1,12 @@
 {{ define "week-view" }}
-    {{ range .Days }}
+    {{ range .Week.Days }}
         <tr>
             <th class="day-name">{{ .DayName }}</th>
             <td colspan="10">
                 <div class="hour-blocks">
                     {{ range .Hours }}
                         <div
-                            class="block {{ if .Active }}active{{ end }}"
+                            class="block {{ if .Active }}active{{ end }} {{ if $.EditMode }}edit{{ end }}"
                             data-time="{{ .Time }}"
                             data-day="{{ .DayName }}"></div>
                     {{ end }}

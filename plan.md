@@ -7,8 +7,8 @@ What is my attack plan here?
 - [X] Start with static HTML
     - Figure out all of the basic layout. How are things layered?
 - [X] Have a Go server serve the static files
-- [ ] Start splitting things up into HTMX reusable templates
-    - [ ] Layered components
+- [X] Start splitting things up into HTMX reusable templates
+    - [X] Layered components
 - [ ] HTMX Core interactions, constraints, edge cases
     - [X] Toggle each square on and off
         - Is it overkill to send every toggle to the server to do a time calculation? I think so.
@@ -18,4 +18,6 @@ What is my attack plan here?
     - [X] Time validation
     - [X] Rendering server-side validation errors
         - Like error pop-ups
+    - [ ] View versus edit mode
     - [ ] Status updates (approved/rejected banners, etc.)
+- [ ] Admin

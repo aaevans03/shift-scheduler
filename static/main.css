@@ -62,11 +62,17 @@ td {
 
 .block {
     background-color: rgb(224, 224, 255);
-    border: 1px solid rgb(231, 231, 255);
 }
 
 .active {
     background-color: rgb(17, 17, 185);
+}
+
+.block.edit {
+    border: 1px solid rgb(231, 231, 255);
+}
+
+.active.edit {
     border: 1px solid rgb(91, 91, 214);
 }
 

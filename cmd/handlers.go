@@ -3,9 +3,13 @@ package main
 import (
 	"log"
 	"net/http"
-	"reflect"
 	"text/template"
 )
+
+type WeekViewData struct {
+	Week     Week
+	EditMode bool
+}
 
 type StatusMessage struct {
 	StatusType string
@@ -15,17 +19,14 @@ type StatusMessage struct {
 
 func getHome(writer http.ResponseWriter, request *http.Request) {
 
-	var data Week
-
-	if reflect.ValueOf(userSchedule).IsZero() {
-		data = initializeSchedule()
-	} else {
-		data = userSchedule.SubmittedWeek
+	data := WeekViewData{
+		Week:     getScheduleFromMemory(),
+		EditMode: false,
 	}
 
 	files := []string{
 		"./templates/base.html",
-		"./templates/schedule.html",
+		"./templates/view-schedule.html",
 		"./templates/week-view.html",
 	}
 
@@ -41,6 +42,33 @@ func getHome(writer http.ResponseWriter, request *http.Request) {
 		log.Print(err.Error())
 		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
 	}
+}
+
+func getEdit(writer http.ResponseWriter, request *http.Request) {
+
+	data := WeekViewData{
+		Week:     getScheduleFromMemory(),
+		EditMode: true,
+	}
+
+	files := []string{
+		"./templates/edit-schedule.html",
+		"./templates/week-view.html",
+	}
+
+	template, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	err = template.ExecuteTemplate(writer, "edit-schedule", data)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+
 }
 
 func postSubmit(writer http.ResponseWriter, request *http.Request) {

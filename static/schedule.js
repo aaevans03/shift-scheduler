@@ -34,7 +34,7 @@ function toggleBlock(block) {
 
 let isPainting = false;
 let toggleOn = null;
-const allBlocks = document.querySelectorAll('.block');
+const allBlocks = document.querySelectorAll('.edit');
 
 allBlocks.forEach((block) => {
     block.addEventListener('pointerdown', (event) => {
