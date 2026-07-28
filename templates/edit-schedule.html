@@ -2,8 +2,9 @@
 <form
     id="edit-schedule"
     hx-post="/schedule/submit"
-    hx-target="#status-message"
+    hx-target="#edit-schedule"
     hx-swap="outerHTML"
+    hx-target-error="#status-message"
 >
     <div class="card">
         <table>

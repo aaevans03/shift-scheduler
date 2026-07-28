@@ -8,3 +8,26 @@
         </ul>
     </div>
 {{ end }}
+
+{{ define "status-message-oob" }}
+    <div
+        id="status-message"
+        class="status-message {{ .StatusType }}"
+        hx-swap-oob="outerHTML"
+    >
+        <strong>{{ .Message }}</strong>
+        <ul>
+            {{ range .Bullets }}
+                <li>{{ . }}</li>
+            {{ end }}
+        </ul>
+    </div>
+{{ end }}
+
+{{ define "status-message-clear-oob" }}
+    <div
+        id="status-message"
+        class="status-message hidden"
+        hx-swap-oob="outerHTML"
+    ></div>
+{{ end }}

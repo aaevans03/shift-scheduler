@@ -99,6 +99,10 @@ td {
     border-radius: 10px;
 }
 
+.status-message:empty {
+    display: none;
+}
+
 .success {
     color: rgb(37, 66, 29);
     background-color: rgb(196, 255, 181);
