@@ -1,11 +1,10 @@
 {{ define "edit-schedule" }}
 <form
     id="edit-schedule"
-    hx-post="/submit"
+    hx-post="/schedule/submit"
     hx-target="#status-message"
     hx-swap="outerHTML"
 >
-    <script defer src="/static/schedule.js"></script>
     <div class="card">
         <table>
             <colgroup>
@@ -40,6 +39,12 @@
         </table>
     </div>
     <div id="form-selected-blocks"></div>
+    <button
+        type="button"
+        hx-get="/schedule"
+        hx-target="#edit-schedule"
+        hx-swap="outerHTML"
+    >Cancel</button>
     <button type="submit">Submit</button>
 </form>
 {{ end }}

@@ -12,8 +12,9 @@ func main() {
 	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
 
 	mux.HandleFunc("GET /{$}", getHome)
-	mux.HandleFunc("GET /edit", getEdit)
-	mux.HandleFunc("POST /submit", postSubmit)
+	mux.HandleFunc("GET /schedule", getSchedule)
+	mux.HandleFunc("GET /schedule/edit", getScheduleEdit)
+	mux.HandleFunc("POST /schedule/submit", postScheduleSubmit)
 	// TODO: implement DELETE /submit endpoint
 
 	log.Print("starting server on http://localhost:4001")

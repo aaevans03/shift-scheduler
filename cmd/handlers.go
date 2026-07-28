@@ -44,7 +44,33 @@ func getHome(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-func getEdit(writer http.ResponseWriter, request *http.Request) {
+func getSchedule(writer http.ResponseWriter, request *http.Request) {
+
+	data := WeekViewData{
+		Week:     getScheduleFromMemory(),
+		EditMode: false,
+	}
+
+	files := []string{
+		"./templates/view-schedule.html",
+		"./templates/week-view.html",
+	}
+
+	template, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	err = template.ExecuteTemplate(writer, "view-schedule", data)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+}
+
+func getScheduleEdit(writer http.ResponseWriter, request *http.Request) {
 
 	data := WeekViewData{
 		Week:     getScheduleFromMemory(),
@@ -71,7 +97,7 @@ func getEdit(writer http.ResponseWriter, request *http.Request) {
 
 }
 
-func postSubmit(writer http.ResponseWriter, request *http.Request) {
+func postScheduleSubmit(writer http.ResponseWriter, request *http.Request) {
 	err := request.ParseForm()
 	if err != nil {
 		http.Error(writer, "Invalid form data", http.StatusBadRequest)

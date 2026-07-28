@@ -7,56 +7,67 @@
  * 4. Submit -> info is sent to the server
  */
 
-const inputContainer = document.querySelector('#form-selected-blocks');
+function initializeScheduleEditor(root = document) {
 
-function updateSelectedInputs() {
-    inputContainer.innerHTML = '';
-
-    document.querySelectorAll('.block.active').forEach((block) => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = block.dataset.day;
-        input.value = block.dataset.time;
-        inputContainer.appendChild(input);
-    })
-}
-
-function toggleBlock(block) {
-    if (toggleOn === true) {
-        block.classList.add('active');
-    } else {
-        block.classList.remove('active');
+    const inputContainer = root.querySelector('#form-selected-blocks');
+    if (!inputContainer) return;
+    
+    function updateSelectedInputs() {
+        inputContainer.innerHTML = '';
+        
+        root.querySelectorAll('.block.active').forEach((block) => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = block.dataset.day;
+            input.value = block.dataset.time;
+            inputContainer.appendChild(input);
+        })
     }
+    
+    function toggleBlock(block) {
+        if (toggleOn === true) {
+            block.classList.add('active');
+        } else {
+            block.classList.remove('active');
+        }
+        updateSelectedInputs();
+    }
+    
+    
+    let isPainting = false;
+    let toggleOn = null;
+    const allBlocks = root.querySelectorAll('.edit');
+    
+    allBlocks.forEach((block) => {
+        block.addEventListener('pointerdown', (event) => {
+            
+            isPainting = true;
+            
+            if (event.currentTarget.classList.contains('active')) {
+                toggleOn = false;
+            } else toggleOn = true;
+            
+            toggleBlock(event.currentTarget);
+        });
+        
+        block.addEventListener('pointerenter', (event) => {
+            if (!isPainting) return;
+            toggleBlock(event.currentTarget);
+        });
+    });
+    
+    root.addEventListener('pointerup', () => {
+        isPainting = false;
+        toggleOn = null;
+    }, { once: false });
     
     updateSelectedInputs();
 }
 
-
-let isPainting = false;
-let toggleOn = null;
-const allBlocks = document.querySelectorAll('.edit');
-
-allBlocks.forEach((block) => {
-    block.addEventListener('pointerdown', (event) => {
-
-        isPainting = true;
-
-        if (event.currentTarget.classList.contains('active')) {
-            toggleOn = false;
-        } else toggleOn = true;
-        
-        toggleBlock(event.currentTarget);
-    });
-
-    block.addEventListener('pointerenter', (event) => {
-        if (!isPainting) return;
-        toggleBlock(event.currentTarget);
-    });
+document.addEventListener('DOMContentLoaded', () => {
+    initializeScheduleEditor();
 });
 
-document.addEventListener('pointerup', () => {
-    isPainting = false;
-    toggleOn = null;
-})
-
-updateSelectedInputs();
+document.body.addEventListener('htmx:afterSwap', (event) => {
+    initializeScheduleEditor(event.target);
+});
