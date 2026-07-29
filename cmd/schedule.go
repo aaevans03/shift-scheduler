@@ -27,14 +27,14 @@ type Week struct {
 
 type Schedule struct {
 	SubmittedWeek   Week
-	Approved        bool
+	ApprovedStatus  string
 	ApprovalMessage string
 }
 
 var userSchedule Schedule
 var dayNames = []string{"Mon", "Tues", "Wed", "Thurs", "Fri"}
 
-func initializeSchedule() Week {
+func initializeSchedule() Schedule {
 
 	// Loop through all days
 	var week []Day
@@ -48,17 +48,17 @@ func initializeSchedule() Week {
 		week = append(week, Day{value, hourList, 0})
 	}
 
-	userSchedule = Schedule{Week{week}, false, ""}
-	return Week{week}
+	userSchedule = Schedule{Week{week}, "", ""}
+	return userSchedule
 }
 
-func getScheduleFromMemory() Week {
-	var data Week
+func getScheduleFromMemory() Schedule {
+	var data Schedule
 
 	if reflect.ValueOf(userSchedule).IsZero() {
 		data = initializeSchedule()
 	} else {
-		data = userSchedule.SubmittedWeek
+		data = userSchedule
 	}
 	return data
 }
@@ -162,5 +162,5 @@ func updateWeek(selected map[string][]int) {
 			hour.Active = slices.Contains(selected[day.DayName], hour.Time)
 		}
 	}
-	userSchedule.Approved = false
+	userSchedule.ApprovedStatus = "Pending Approval"
 }

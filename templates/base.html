@@ -13,7 +13,10 @@
     <script defer src="/static/schedule.js"></script>
 </head>
 <body hx-ext="response-targets">
-    <h1>Shift Scheduler</h1>
+    <header>
+        <h1>Shift Scheduler</h1>
+        {{ template "header-status" . }}
+    </header>
     {{ template "view-schedule" . }}
     <div id="status-message" class="status-message hidden"></div>
 </body>

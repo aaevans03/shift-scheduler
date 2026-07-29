@@ -18,6 +18,6 @@ What is my attack plan here?
     - [X] Time validation
     - [X] Rendering server-side validation errors
         - Like error pop-ups
-    - [ ] View versus edit mode
-    - [ ] Status updates (approved/rejected banners, etc.)
+    - [X] View versus edit mode
+    - [X] Status updates (approved/rejected banners, etc.)
 - [ ] Admin

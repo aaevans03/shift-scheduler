@@ -1,0 +1,27 @@
+{{ define "header-status" }}
+    <div id="header-status" class='{{ if or .EditMode (eq .ApprovalStatus "") }}hidden{{ end }}'>
+        <div
+            class='admin-approval
+                {{ if eq .ApprovalStatus "Pending Approval" }}pending{{ end }}
+                {{ if eq .ApprovalStatus "Approved" }}success{{ end }}
+                {{ if eq .ApprovalStatus "Rejected" }}failure{{ end }}'
+        >
+            {{ .ApprovalStatus }}
+        </div>
+    </div>
+{{ end }}
+
+{{ define "header-status-oob" }}
+    <div
+        class='{{ if or .EditMode (eq .ApprovalStatus "") }}hidden{{ end }}'
+        id="header-status"
+        hx-swap-oob="outerHTML"
+    >
+        <div
+            class='admin-approval
+                {{ if eq .ApprovalStatus "Pending Approval" }}pending{{ end }}
+                {{ if eq .ApprovalStatus "Approved" }}success{{ end }}
+                {{ if eq .ApprovalStatus "Rejected" }}failure{{ end }}'
+        >{{ .ApprovalStatus }}</div>
+    </div>
+{{ end }}

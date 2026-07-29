@@ -7,8 +7,10 @@ import (
 )
 
 type WeekViewData struct {
-	Week     Week
-	EditMode bool
+	Week            Week
+	EditMode        bool
+	ApprovalStatus  string
+	ApprovalMessage string
 }
 
 type StatusMessage struct {
@@ -19,13 +21,18 @@ type StatusMessage struct {
 
 func getHome(writer http.ResponseWriter, request *http.Request) {
 
+	memorySchedule := getScheduleFromMemory()
+
 	data := WeekViewData{
-		Week:     getScheduleFromMemory(),
-		EditMode: false,
+		Week:            memorySchedule.SubmittedWeek,
+		EditMode:        false,
+		ApprovalStatus:  memorySchedule.ApprovedStatus,
+		ApprovalMessage: memorySchedule.ApprovalMessage,
 	}
 
 	files := []string{
 		"./templates/base.html",
+		"./templates/header-status.html",
 		"./templates/view-schedule.html",
 		"./templates/week-view.html",
 	}
@@ -46,15 +53,20 @@ func getHome(writer http.ResponseWriter, request *http.Request) {
 
 func getSchedule(writer http.ResponseWriter, request *http.Request) {
 
+	memorySchedule := getScheduleFromMemory()
+
 	data := WeekViewData{
-		Week:     getScheduleFromMemory(),
-		EditMode: false,
+		Week:            memorySchedule.SubmittedWeek,
+		EditMode:        false,
+		ApprovalStatus:  memorySchedule.ApprovedStatus,
+		ApprovalMessage: memorySchedule.ApprovalMessage,
 	}
 
 	files := []string{
 		"./templates/view-schedule.html",
 		"./templates/week-view.html",
 		"./templates/status-message.html",
+		"./templates/header-status.html",
 	}
 
 	template, err := template.ParseFiles(files...)
@@ -75,19 +87,30 @@ func getSchedule(writer http.ResponseWriter, request *http.Request) {
 		log.Print(err.Error())
 		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
 	}
+
+	err = template.ExecuteTemplate(writer, "header-status-oob", data)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
 }
 
 func getScheduleEdit(writer http.ResponseWriter, request *http.Request) {
 
+	memorySchedule := getScheduleFromMemory()
+
 	data := WeekViewData{
-		Week:     getScheduleFromMemory(),
-		EditMode: true,
+		Week:            memorySchedule.SubmittedWeek,
+		EditMode:        true,
+		ApprovalStatus:  memorySchedule.ApprovedStatus,
+		ApprovalMessage: memorySchedule.ApprovalMessage,
 	}
 
 	files := []string{
 		"./templates/edit-schedule.html",
 		"./templates/week-view.html",
 		"./templates/status-message.html",
+		"./templates/header-status.html",
 	}
 
 	template, err := template.ParseFiles(files...)
@@ -104,6 +127,12 @@ func getScheduleEdit(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	err = template.ExecuteTemplate(writer, "status-message-clear-oob", nil)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	err = template.ExecuteTemplate(writer, "header-status-oob", data)
 	if err != nil {
 		log.Print(err.Error())
 		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
@@ -138,7 +167,7 @@ func postScheduleSubmit(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	if userSchedule.Approved == true {
+	if userSchedule.ApprovedStatus == "Approved" {
 		data := StatusMessage{
 			"failure",
 			"Failure",
@@ -171,9 +200,13 @@ func postScheduleSubmit(writer http.ResponseWriter, request *http.Request) {
 	// Update/save week in server after validation
 	updateWeek(selected)
 
+	memorySchedule := getScheduleFromMemory()
+
 	weekData := WeekViewData{
-		Week:     getScheduleFromMemory(),
-		EditMode: false,
+		Week:            memorySchedule.SubmittedWeek,
+		EditMode:        false,
+		ApprovalStatus:  memorySchedule.ApprovedStatus,
+		ApprovalMessage: memorySchedule.ApprovalMessage,
 	}
 
 	statusData := StatusMessage{
@@ -186,6 +219,7 @@ func postScheduleSubmit(writer http.ResponseWriter, request *http.Request) {
 		"./templates/view-schedule.html",
 		"./templates/week-view.html",
 		"./templates/status-message.html",
+		"./templates/header-status.html",
 	)
 	if err != nil {
 		log.Print(err.Error())
@@ -200,6 +234,12 @@ func postScheduleSubmit(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	err = viewScheduleTemplate.ExecuteTemplate(writer, "status-message-oob", statusData)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	err = viewScheduleTemplate.ExecuteTemplate(writer, "header-status-oob", weekData)
 	if err != nil {
 		log.Print(err.Error())
 		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
