@@ -28,7 +28,7 @@ type Week struct {
 
 type Schedule struct {
 	SubmittedWeek   Week
-	ApprovedStatus  string
+	ApprovalStatus  string
 	ApprovalMessage string
 }
 
@@ -168,5 +168,5 @@ func updateWeek(selected map[string][]int) {
 		day.TotalTime = minutesToHours(dayTotalBlocks * 10)
 	}
 	userSchedule.SubmittedWeek.TotalTime = minutesToHours(weekTotalBlocks * 10)
-	userSchedule.ApprovedStatus = "Pending Approval"
+	userSchedule.ApprovalStatus = "Pending Approval"
 }

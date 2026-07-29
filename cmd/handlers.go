@@ -6,7 +6,7 @@ import (
 	"text/template"
 )
 
-type FrontendData struct {
+type ScheduleFrontendData struct {
 	Week            Week
 	EditMode        bool
 	ApprovalStatus  string
@@ -14,6 +14,14 @@ type FrontendData struct {
 
 	CurrentUser UserRole
 	IsAdmin     bool
+}
+
+type AdminFrontendData struct {
+	EditMode        bool   // needed for HTML template
+	ApprovalStatus  string // needed for HTML template
+	CurrentUser     UserRole
+	IsAdmin         bool
+	StudentSchedule Schedule
 }
 
 type StatusMessage struct {
@@ -28,16 +36,12 @@ func postLoginAdmin(writer http.ResponseWriter, request *http.Request) {
 
 	// Admin starter screen (you can select)
 
-	memorySchedule := getScheduleFromMemory()
-
-	data := FrontendData{
-		Week:            memorySchedule.SubmittedWeek,
+	data := AdminFrontendData{
 		EditMode:        false,
 		ApprovalStatus:  "",
-		ApprovalMessage: "",
-
-		CurrentUser: AdminUser,
-		IsAdmin:     true,
+		CurrentUser:     AdminUser,
+		IsAdmin:         true,
+		StudentSchedule: getScheduleFromMemory(),
 	}
 
 	files := []string{
@@ -53,7 +57,7 @@ func postLoginAdmin(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	err = template.ExecuteTemplate(writer, "admin-dashboard", nil)
+	err = template.ExecuteTemplate(writer, "admin-dashboard", data)
 	if err != nil {
 		log.Print(err.Error())
 		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
@@ -80,10 +84,10 @@ func postLoginStudent(writer http.ResponseWriter, request *http.Request) {
 
 	memorySchedule := getScheduleFromMemory()
 
-	data := FrontendData{
+	data := ScheduleFrontendData{
 		Week:            memorySchedule.SubmittedWeek,
 		EditMode:        false,
-		ApprovalStatus:  memorySchedule.ApprovedStatus,
+		ApprovalStatus:  memorySchedule.ApprovalStatus,
 		ApprovalMessage: memorySchedule.ApprovalMessage,
 
 		CurrentUser: StudentUser,
@@ -133,14 +137,26 @@ func getHome(writer http.ResponseWriter, request *http.Request) {
 
 	memorySchedule := getScheduleFromMemory()
 
-	data := FrontendData{
-		Week:            memorySchedule.SubmittedWeek,
-		EditMode:        false,
-		ApprovalStatus:  memorySchedule.ApprovedStatus,
-		ApprovalMessage: memorySchedule.ApprovalMessage,
+	var data any
+	if user == AdminUser {
+		data = AdminFrontendData{
+			EditMode:        false,
+			ApprovalStatus:  "",
+			CurrentUser:     AdminUser,
+			IsAdmin:         true,
+			StudentSchedule: getScheduleFromMemory(),
+		}
 
-		CurrentUser: user,
-		IsAdmin:     user == AdminUser,
+	} else {
+		data = ScheduleFrontendData{
+			Week:            memorySchedule.SubmittedWeek,
+			EditMode:        false,
+			ApprovalStatus:  memorySchedule.ApprovalStatus,
+			ApprovalMessage: memorySchedule.ApprovalMessage,
+
+			CurrentUser: user,
+			IsAdmin:     user == AdminUser,
+		}
 	}
 
 	files := []string{
@@ -175,10 +191,10 @@ func getSchedule(writer http.ResponseWriter, request *http.Request) {
 
 	memorySchedule := getScheduleFromMemory()
 
-	data := FrontendData{
+	data := ScheduleFrontendData{
 		Week:            memorySchedule.SubmittedWeek,
 		EditMode:        false,
-		ApprovalStatus:  memorySchedule.ApprovedStatus,
+		ApprovalStatus:  memorySchedule.ApprovalStatus,
 		ApprovalMessage: memorySchedule.ApprovalMessage,
 
 		CurrentUser: user,
@@ -228,10 +244,10 @@ func getScheduleEdit(writer http.ResponseWriter, request *http.Request) {
 
 	memorySchedule := getScheduleFromMemory()
 
-	data := FrontendData{
+	data := ScheduleFrontendData{
 		Week:            memorySchedule.SubmittedWeek,
 		EditMode:        true,
-		ApprovalStatus:  memorySchedule.ApprovedStatus,
+		ApprovalStatus:  memorySchedule.ApprovalStatus,
 		ApprovalMessage: memorySchedule.ApprovalMessage,
 
 		CurrentUser: user,
@@ -306,7 +322,7 @@ func postScheduleSubmit(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	if userSchedule.ApprovedStatus == "Approved" {
+	if userSchedule.ApprovalStatus == "Approved" {
 		data := StatusMessage{
 			"failure",
 			"Failure",
@@ -341,10 +357,10 @@ func postScheduleSubmit(writer http.ResponseWriter, request *http.Request) {
 
 	memorySchedule := getScheduleFromMemory()
 
-	weekData := FrontendData{
+	weekData := ScheduleFrontendData{
 		Week:            memorySchedule.SubmittedWeek,
 		EditMode:        false,
-		ApprovalStatus:  memorySchedule.ApprovedStatus,
+		ApprovalStatus:  memorySchedule.ApprovalStatus,
 		ApprovalMessage: memorySchedule.ApprovalMessage,
 
 		CurrentUser: user,

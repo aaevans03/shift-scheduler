@@ -49,10 +49,15 @@ body {
     height: 210px;
 }
 
-table {
+table.schedule {
     table-layout: fixed;
     width: 100%;
     border-spacing: 0;
+}
+
+.schedule td {
+    border-left: 1px solid rgb(176, 176, 216);
+    padding: 0;
 }
 
 .day-col {
@@ -78,11 +83,6 @@ table {
     color:rgb(74, 74, 133);
     text-align: right;
     padding-right: 6px;
-}
-
-td {
-    border-left: 1px solid rgb(176, 176, 216);
-    padding: 0;
 }
 
 .hour-blocks {
@@ -115,8 +115,7 @@ td {
     border: 1px solid rgb(91, 91, 214);
 }
 
-
-.total {
+.schedule td.total {
     text-align: left;
     padding-left: 6px;
 }
@@ -124,6 +123,25 @@ td {
 .day-total {
     color:rgb(129, 129, 184);
 }
+
+.card h2 {
+    font-weight: normal;
+    margin: 0 0 10px 0;
+}
+
+table.user-list {
+    margin-left: 20px;
+}
+
+table.user-list td {
+    padding: 5px;
+}
+
+.student-name {
+    font-weight: bold;
+    min-width: 100px;
+}
+
 
 button {
     border: none;

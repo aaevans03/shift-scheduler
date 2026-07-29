@@ -1,7 +1,21 @@
 {{ define "admin-dashboard" }}
 <div id="admin-dashboard">
     <div class="card">
-        Admin dashboard will go here
+        <h2>Schedules</h2>
+        <table class="user-list">
+            <tr>
+                <td class="student-name"><span>student1</span></td>
+                <td>
+                    <div class='admin-approval
+                        {{ if eq .StudentSchedule.ApprovalStatus "" }}hidden
+                        {{ else if eq .StudentSchedule.ApprovalStatus "Pending Approval" }}pending
+                        {{ else if eq .StudentSchedule.ApprovalStatus "Approved" }}success
+                        {{ else if eq .StudentSchedule.ApprovalStatus "Rejected" }}failure{{ end }}'
+                    >{{ .StudentSchedule.ApprovalStatus }}</div>
+                </td>
+                <td>{{ .StudentSchedule.ApprovalMessage }}</td>
+            </tr>
+        </table>
     </div>
 </div>
 {{ end }}
