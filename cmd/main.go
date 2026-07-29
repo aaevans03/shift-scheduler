@@ -18,7 +18,7 @@ func main() {
 	mux.HandleFunc("GET /schedule", getSchedule)
 	mux.HandleFunc("GET /schedule/edit", getScheduleEdit)
 	mux.HandleFunc("POST /schedule/submit", postScheduleSubmit)
-	// TODO: implement DELETE /submit endpoint
+	mux.HandleFunc("DELETE /schedule", deleteSchedule)
 
 	mux.HandleFunc("GET /admin", getAdmin)
 	mux.HandleFunc("GET /admin/view", getAdminView)

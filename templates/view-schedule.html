@@ -1,4 +1,9 @@
 {{ define "view-schedule" }}
+
+{{ if .IsAdmin }}
+    <div id="admin-dashboard">
+{{ end }}
+
 <div id="view-schedule">
     <div class="card">
         <table class="schedule">
@@ -34,7 +39,7 @@
         </table>
     </div>
     {{ if .IsAdmin }}
-        <form class="admin-schedule-actions">
+        <form class="spaced-buttons">
             <button
                 type="button"
                 class="cancel"
@@ -60,6 +65,29 @@
                 >Reject</button>
             </div>
         </form>
+    {{ else if eq .ApprovalStatus "Approved" }}
+        <div class="spaced-buttons">
+            <div class="admin-approval success">
+                <b>APPROVED.</b> {{ .ApprovalMessage }}
+            </div>
+            <button
+                class="reject"
+                hx-delete="/schedule"
+                hx-target="#view-schedule"
+                hx-swap="outerHTML"
+            >Reset Schedule</button>
+        </div>
+    {{ else if eq .ApprovalStatus "Rejected" }}
+        <div class="inline-items">
+            <button
+                hx-get="/schedule/edit"
+                hx-target="#view-schedule"
+                hx-swap="outerHTML"
+            >Edit</button>
+            <div class="admin-approval failure">
+                <b>REJECTED, please edit and resubmit.</b> {{ .ApprovalMessage }}
+            </div>
+        </div>
     {{ else }}
         <button
             hx-get="/schedule/edit"
@@ -68,4 +96,9 @@
         >Edit</button>
     {{ end }}
 </div>
+
+{{ if .IsAdmin }}
+    </div>
+{{ end }}
+
 {{ end }}

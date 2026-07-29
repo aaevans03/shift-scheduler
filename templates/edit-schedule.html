@@ -40,13 +40,15 @@
         </table>
     </div>
     <div id="form-selected-blocks"></div>
-    <button
-        type="button"
-        class="cancel"
-        hx-get="/schedule"
-        hx-target="#edit-schedule"
-        hx-swap="outerHTML"
-    >Cancel</button>
-    <button type="submit">Submit</button>
+    <div class="spaced-buttons">
+        <button
+            type="button"
+            class="cancel"
+            hx-get="/schedule"
+            hx-target="#edit-schedule"
+            hx-swap="outerHTML"
+        >Cancel</button>
+        <button type="submit">Submit</button>
+    </div>
 </form>
 {{ end }}

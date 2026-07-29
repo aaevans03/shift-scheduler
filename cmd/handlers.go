@@ -404,11 +404,66 @@ func postScheduleSubmit(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
+func deleteSchedule(writer http.ResponseWriter, request *http.Request) {
+	user, ok := currentUser(request)
+	if !ok {
+		log.Print("401 Unauthorized Access Attempted")
+		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	newSchedule := initializeSchedule()
+
+	data := ScheduleFrontendData{
+		Week:            newSchedule.SubmittedWeek,
+		EditMode:        false,
+		ApprovalStatus:  newSchedule.ApprovalStatus,
+		ApprovalMessage: newSchedule.ApprovalMessage,
+
+		CurrentUser: user,
+		IsAdmin:     user == AdminUser,
+	}
+
+	files := []string{
+		"./templates/view-schedule.html",
+		"./templates/week-view.html",
+		"./templates/status-message.html",
+		"./templates/header-status.html",
+	}
+
+	template, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	err = template.ExecuteTemplate(writer, "view-schedule", data)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	err = template.ExecuteTemplate(writer, "status-message-clear-oob", nil)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	err = template.ExecuteTemplate(writer, "header-status-oob", data)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+}
+
 func getAdmin(writer http.ResponseWriter, request *http.Request) {
 	user, ok := currentUser(request)
 	if !ok {
-		user = StudentUser
-		createSession(writer, user)
+		log.Print("401 Unauthorized Access Attempted")
+		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
+		return
 	} else if user != AdminUser {
 		log.Print("401 Unauthorized Access Attempted")
 		http.Error(writer, "Unauthorized", http.StatusUnauthorized)

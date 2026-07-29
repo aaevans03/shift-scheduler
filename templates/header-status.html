@@ -1,5 +1,5 @@
 {{ define "header-status" }}
-<div id="header-status" class='header-status {{ if .EditMode }}hidden{{ end }}'>
+<div id="header-status" class='inline-items {{ if .EditMode }}hidden{{ end }}'>
         <div
             class='admin-approval
                 {{ if eq .ApprovalStatus "" }}hidden
@@ -26,7 +26,7 @@
 
 {{ define "header-status-oob" }}
     <div
-        class='header-status {{ if .EditMode }}hidden{{ end }}'
+        class='inline-items {{ if .EditMode }}hidden{{ end }}'
         id="header-status"
         hx-swap-oob="outerHTML"
     >
