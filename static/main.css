@@ -115,6 +115,31 @@ td {
     color:rgb(129, 129, 184);
 }
 
+button {
+    border: none;
+    padding: 7px 15px;
+    width: 100px;
+    border-radius: 10px;
+
+    background-color: rgb(17, 17, 185);
+    color: white;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: rgb(3, 3, 138);
+}
+
+button.cancel {
+    background-color: rgb(255, 212, 212);
+    color: rgb(66, 29, 29);
+    /* border: 1px solid rgb(66, 29, 29); */
+}
+
+button.cancel:hover {
+    background-color: rgb(250, 199, 199);
+}
+
 .hidden {
     display: none;
 }
