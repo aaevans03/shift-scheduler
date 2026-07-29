@@ -3,6 +3,7 @@
         <div
             class='admin-approval
                 {{ if eq .ApprovalStatus "" }}hidden
+                {{ else if eq .ApprovalStatus "Not Submitted" }}not-submitted
                 {{ else if eq .ApprovalStatus "Pending Approval" }}pending
                 {{ else if eq .ApprovalStatus "Approved" }}success
                 {{ else if eq .ApprovalStatus "Rejected" }}failure{{ end }}'
@@ -32,6 +33,7 @@
         <div
             class='admin-approval
                 {{ if eq .ApprovalStatus "" }}hidden
+                {{ else if eq .ApprovalStatus "Not Submitted" }}not-submitted
                 {{ else if eq .ApprovalStatus "Pending Approval" }}pending
                 {{ else if eq .ApprovalStatus "Approved" }}success
                 {{ else if eq .ApprovalStatus "Rejected" }}failure{{ end }}'

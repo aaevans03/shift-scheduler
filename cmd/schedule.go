@@ -49,7 +49,7 @@ func initializeSchedule() Schedule {
 		week = append(week, Day{value, hourList, 0})
 	}
 
-	userSchedule = Schedule{Week{week, 0.0}, "", ""}
+	userSchedule = Schedule{Week{week, 0.0}, "Not Submitted", ""}
 	return userSchedule
 }
 

@@ -33,6 +33,11 @@ header {
     background-color: rgb(255, 223, 163);
 }
 
+.not-submitted {
+    color: rgb(7, 21, 82);
+    background-color: rgb(222, 228, 255);
+}
+
 body {
     margin: 100px 100px;
     width: 80%;
