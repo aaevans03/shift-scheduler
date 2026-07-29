@@ -13,6 +13,16 @@ function initializeScheduleEditor(root = document) {
     if (!inputContainer) return;
     
     function updateSelectedInputs() {
+
+        let totalMinutes = {
+            week: 0,    // Week total
+            Mon: 0,     // Day total onward
+            Tues: 0,
+            Wed: 0,
+            Thurs: 0,
+            Fri: 0,
+        }
+
         inputContainer.innerHTML = '';
         
         root.querySelectorAll('.block.active').forEach((block) => {
@@ -21,7 +31,17 @@ function initializeScheduleEditor(root = document) {
             input.name = block.dataset.day;
             input.value = block.dataset.time;
             inputContainer.appendChild(input);
+
+            totalMinutes["week"] += 1;
+            totalMinutes[block.dataset.day] += 1;
         })
+
+        for (period in totalMinutes) {
+
+            hours = Math.round(((totalMinutes[period] * 10) / 60) * 100) / 100;
+
+            document.getElementById("total-" + period).innerHTML = hours.toFixed(2) + " hrs";
+        }
     }
     
     function toggleBlock(block) {

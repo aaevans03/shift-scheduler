@@ -18,11 +18,12 @@ type Block struct {
 type Day struct {
 	DayName   string
 	Hours     []Block
-	TotalTime float32
+	TotalTime float64
 }
 
 type Week struct {
-	Days []Day
+	Days      []Day
+	TotalTime float64
 }
 
 type Schedule struct {
@@ -48,7 +49,7 @@ func initializeSchedule() Schedule {
 		week = append(week, Day{value, hourList, 0})
 	}
 
-	userSchedule = Schedule{Week{week}, "", ""}
+	userSchedule = Schedule{Week{week, 0.0}, "", ""}
 	return userSchedule
 }
 
@@ -70,7 +71,7 @@ func convertSliceStrToInt(stringSlice []string) []int {
 	for _, time := range stringSlice {
 		convertedTime, err := strconv.Atoi(time)
 		if err != nil {
-			log.Print("error")
+			log.Print("Error converting string array to int array")
 		}
 		convertedDay = append(convertedDay, convertedTime)
 	}
@@ -114,13 +115,10 @@ func validateSchedule(selected map[string][]int) []string {
 
 		shiftStartTimes := calculateShiftStartTimes(times)
 
-		log.Print("Shift start times for ", day, ": ", shiftStartTimes)
-
 		// Calculate shift lengths
 		for _, shiftStart := range shiftStartTimes {
 			length := calculateShiftLength(shiftStart, times)
 			if length < 180 {
-				log.Print("One shift must be at least 180 minutes long. A shift on ", day, " is: ", length)
 				findings = append(
 					findings,
 					fmt.Sprintf("<strong>%s</strong> has a shift of %.2f hours. Shifts must be at least 3 hours.", day, minutesToHours(length)),
@@ -130,7 +128,6 @@ func validateSchedule(selected map[string][]int) []string {
 
 		// Max daily work: 9 hours
 		if dayTime > 540 {
-			log.Print("Daily time must not exceed 540 minutes. Minutes for ", day, ": ", dayTime)
 			findings = append(
 				findings,
 				fmt.Sprintf("<strong>%s</strong> has a total work time of length %.2f hours. Do not exceed 9 hours in one day.", day, minutesToHours(dayTime)),
@@ -142,7 +139,6 @@ func validateSchedule(selected map[string][]int) []string {
 
 	// Weekly total is 20-40 hours
 	if totalTime < 1200 || totalTime > 2400 {
-		log.Print("Total time per week must be between 1200 and 2400 minutes. Current minutes: ", totalTime)
 		findings = append(
 			findings,
 			fmt.Sprintf("Total work time of the week is %.2f hours. It must be 20-40 hours.", minutesToHours(totalTime)),
@@ -153,14 +149,24 @@ func validateSchedule(selected map[string][]int) []string {
 }
 
 func updateWeek(selected map[string][]int) {
+	weekTotalBlocks := 0
 	for dayIndex := range userSchedule.SubmittedWeek.Days {
 		day := &userSchedule.SubmittedWeek.Days[dayIndex]
 
+		dayTotalBlocks := 0
 		for hourIndex := range day.Hours {
 			hour := &day.Hours[hourIndex]
 
-			hour.Active = slices.Contains(selected[day.DayName], hour.Time)
+			if slices.Contains(selected[day.DayName], hour.Time) {
+				hour.Active = true
+				dayTotalBlocks++
+				weekTotalBlocks++
+			} else {
+				hour.Active = false
+			}
 		}
+		day.TotalTime = minutesToHours(dayTotalBlocks * 10)
 	}
+	userSchedule.SubmittedWeek.TotalTime = minutesToHours(weekTotalBlocks * 10)
 	userSchedule.ApprovedStatus = "Pending Approval"
 }

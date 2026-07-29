@@ -20,4 +20,10 @@ What is my attack plan here?
         - Like error pop-ups
     - [X] View versus edit mode
     - [X] Status updates (approved/rejected banners, etc.)
-- [ ] Admin
+    - [ ] Daily and weekly hour totals
+- [ ] Admin approval functionality
+    - [ ] Button to switch to admin
+        - Persist a "logged in" user with cookies or session map, with hardcoded user roles.
+    - [ ] Approve and reject submissions, with comments
+    - [ ] Approved schedule is read-only unless reset
+    - [ ] Users can edit & resubmit if previously rejected

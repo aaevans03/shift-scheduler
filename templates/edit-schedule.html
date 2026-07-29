@@ -34,7 +34,7 @@
                 <th class="hour-label">3pm</th>
                 <th class="hour-label">4pm</th>
                 <th class="hour-label">5pm</th>
-                <th></th>
+                <td id="total-week" class="total week-total">{{ printf "%.2f" .Week.TotalTime }} hrs</td>
             </tr>
             {{ template "week-view" . }}
         </table>

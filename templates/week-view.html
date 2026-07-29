@@ -12,7 +12,7 @@
                     {{ end }}
                 </div>
             </td>
-            <!-- <td class="total">0.00 hrs</td> -->
+            <td id="total-{{ .DayName }}" class="total day-total">{{ printf "%.2f" .TotalTime }} hrs</td>
         </tr>
     {{ end }}
 {{ end }}

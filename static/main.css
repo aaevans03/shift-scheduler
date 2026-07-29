@@ -50,13 +50,18 @@ table {
 }
 
 .total-col {
-    width: 75px;
+    width: 85px;
 }
 
 .hour-label {
     border-left: 1px solid rgb(176, 176, 216);
     text-align: left;
     padding: 7px 5px;
+}
+
+.week-total {
+    font-weight: bolder;
+    color:rgb(74, 74, 133);
 }
 
 .day-name {
@@ -104,7 +109,10 @@ td {
 .total {
     text-align: left;
     padding-left: 6px;
-    color:rgb(74, 74, 133);
+}
+
+.day-total {
+    color:rgb(129, 129, 184);
 }
 
 .hidden {
