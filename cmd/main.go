@@ -20,6 +20,11 @@ func main() {
 	mux.HandleFunc("POST /schedule/submit", postScheduleSubmit)
 	// TODO: implement DELETE /submit endpoint
 
+	mux.HandleFunc("GET /admin", getAdmin)
+	mux.HandleFunc("GET /admin/view", getAdminView)
+	mux.HandleFunc("PUT /admin/approve", putAdminApprove)
+	mux.HandleFunc("PUT /admin/reject", putAdminReject)
+
 	log.Print("starting server on http://localhost:4001")
 
 	err := http.ListenAndServe(":4001", mux)

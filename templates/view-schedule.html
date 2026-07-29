@@ -33,10 +33,39 @@
             {{ template "week-view" . }}
         </table>
     </div>
-    <button
-        hx-get="/schedule/edit"
-        hx-target="#view-schedule"
-        hx-swap="outerHTML"
-    >Edit</button>
+    {{ if .IsAdmin }}
+        <form class="admin-schedule-actions">
+            <button
+                type="button"
+                class="cancel"
+                hx-get="/admin"
+                hx-target="#view-schedule"
+                hx-swap="outerHTML"
+            >Cancel</button>
+            <div>
+                <input name="approval-comments" class="approval-comments" type="text">
+                <button
+                    type="submit"
+                    class="approve"
+                    hx-put="/admin/approve"
+                    hx-target="#view-schedule"
+                    hx-swap="outerHTML"
+                    >Approve</button>
+                    <button
+                    type="submit"
+                    class="reject"
+                    hx-put="/admin/reject"
+                    hx-target="#view-schedule"
+                    hx-swap="outerHTML"
+                >Reject</button>
+            </div>
+        </form>
+    {{ else }}
+        <button
+            hx-get="/schedule/edit"
+            hx-target="#view-schedule"
+            hx-swap="outerHTML"
+        >Edit</button>
+    {{ end }}
 </div>
 {{ end }}

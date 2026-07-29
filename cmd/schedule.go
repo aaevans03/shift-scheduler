@@ -170,3 +170,13 @@ func updateWeek(selected map[string][]int) {
 	userSchedule.SubmittedWeek.TotalTime = minutesToHours(weekTotalBlocks * 10)
 	userSchedule.ApprovalStatus = "Pending Approval"
 }
+
+func approveSchedule(message string) {
+	userSchedule.ApprovalStatus = "Approved"
+	userSchedule.ApprovalMessage = message
+}
+
+func rejectSchedule(message string) {
+	userSchedule.ApprovalStatus = "Rejected"
+	userSchedule.ApprovalMessage = message
+}

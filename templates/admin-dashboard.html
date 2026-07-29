@@ -13,6 +13,15 @@
                         {{ else if eq .StudentSchedule.ApprovalStatus "Rejected" }}failure{{ end }}'
                     >{{ .StudentSchedule.ApprovalStatus }}</div>
                 </td>
+                <td>
+                    {{ if ne .StudentSchedule.ApprovalStatus "Not Submitted" }}
+                        <button
+                            hx-get="/admin/view"
+                            hx-target="#admin-dashboard"
+                            hx-swap="outerHTML"
+                        >View</button>
+                    {{ end }}
+                </td>
                 <td>{{ .StudentSchedule.ApprovalMessage }}</td>
             </tr>
         </table>

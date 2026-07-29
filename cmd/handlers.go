@@ -403,3 +403,208 @@ func postScheduleSubmit(writer http.ResponseWriter, request *http.Request) {
 		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
 	}
 }
+
+func getAdmin(writer http.ResponseWriter, request *http.Request) {
+	user, ok := currentUser(request)
+	if !ok {
+		user = StudentUser
+		createSession(writer, user)
+	} else if user != AdminUser {
+		log.Print("401 Unauthorized Access Attempted")
+		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	data := AdminFrontendData{
+		EditMode:        false,
+		ApprovalStatus:  "",
+		CurrentUser:     AdminUser,
+		IsAdmin:         true,
+		StudentSchedule: getScheduleFromMemory(),
+	}
+
+	files := []string{
+		"./templates/admin-dashboard.html",
+		"./templates/header-status.html",
+	}
+
+	template, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	err = template.ExecuteTemplate(writer, "admin-dashboard", data)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	err = template.ExecuteTemplate(writer, "header-status-oob", data)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+}
+
+func getAdminView(writer http.ResponseWriter, request *http.Request) {
+	user, ok := currentUser(request)
+	if !ok {
+		log.Print("401 Unauthorized Access Attempted")
+		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
+		return
+	} else if user != AdminUser {
+		log.Print("401 Unauthorized Access Attempted")
+		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	memorySchedule := getScheduleFromMemory()
+
+	data := ScheduleFrontendData{
+		Week:            memorySchedule.SubmittedWeek,
+		EditMode:        false,
+		ApprovalStatus:  memorySchedule.ApprovalStatus,
+		ApprovalMessage: memorySchedule.ApprovalMessage,
+
+		CurrentUser: user,
+		IsAdmin:     user == AdminUser,
+	}
+
+	files := []string{
+		"./templates/view-schedule.html",
+		"./templates/week-view.html",
+		"./templates/status-message.html",
+		"./templates/header-status.html",
+	}
+
+	template, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	err = template.ExecuteTemplate(writer, "view-schedule", data)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	err = template.ExecuteTemplate(writer, "status-message-clear-oob", nil)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	err = template.ExecuteTemplate(writer, "header-status-oob", data)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+}
+
+func putAdminApprove(writer http.ResponseWriter, request *http.Request) {
+	user, ok := currentUser(request)
+	if !ok {
+		user = StudentUser
+		createSession(writer, user)
+	} else if user != AdminUser {
+		log.Print("401 Unauthorized Access Attempted")
+		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	err := request.ParseForm()
+	if err != nil {
+		http.Error(writer, "Invalid form data", http.StatusBadRequest)
+		return
+	}
+
+	approveSchedule(request.Form["approval-comments"][0])
+
+	data := AdminFrontendData{
+		EditMode:        false,
+		ApprovalStatus:  "",
+		CurrentUser:     AdminUser,
+		IsAdmin:         true,
+		StudentSchedule: getScheduleFromMemory(),
+	}
+
+	files := []string{
+		"./templates/admin-dashboard.html",
+		"./templates/header-status.html",
+	}
+
+	template, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	err = template.ExecuteTemplate(writer, "admin-dashboard", data)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	err = template.ExecuteTemplate(writer, "header-status-oob", data)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+}
+
+func putAdminReject(writer http.ResponseWriter, request *http.Request) {
+	user, ok := currentUser(request)
+	if !ok {
+		user = StudentUser
+		createSession(writer, user)
+	} else if user != AdminUser {
+		log.Print("401 Unauthorized Access Attempted")
+		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	err := request.ParseForm()
+	if err != nil {
+		http.Error(writer, "Invalid form data", http.StatusBadRequest)
+		return
+	}
+
+	rejectSchedule(request.Form["approval-comments"][0])
+
+	data := AdminFrontendData{
+		EditMode:        false,
+		ApprovalStatus:  "",
+		CurrentUser:     AdminUser,
+		IsAdmin:         true,
+		StudentSchedule: getScheduleFromMemory(),
+	}
+
+	files := []string{
+		"./templates/admin-dashboard.html",
+		"./templates/header-status.html",
+	}
+
+	template, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	err = template.ExecuteTemplate(writer, "admin-dashboard", data)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	err = template.ExecuteTemplate(writer, "header-status-oob", data)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+}

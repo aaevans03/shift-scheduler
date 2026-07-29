@@ -177,6 +177,34 @@ button.cancel:hover {
     display: none;
 }
 
+.admin-schedule-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.approval-comments {
+    width: 300px;
+    height: 20px;
+    margin-right: 8px;
+}
+
+button.approve {
+    background-color: rgb(0, 109, 27);
+}
+
+button.approve:hover {
+    background-color: rgb(0, 85, 21);
+}
+
+button.reject {
+    background-color: rgb(146, 1, 1);
+}
+
+button.reject:hover {
+    background-color: rgb(99, 2, 2);
+}
+
 .status-message {
     width: fit-content;
     font-size: 16px;
