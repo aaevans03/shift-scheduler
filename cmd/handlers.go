@@ -44,36 +44,17 @@ func postLoginAdmin(writer http.ResponseWriter, request *http.Request) {
 		StudentSchedule: getScheduleFromMemory(),
 	}
 
-	files := []string{
-		"./templates/admin-dashboard.html",
-		"./templates/status-message.html",
-		"./templates/header-status.html",
-	}
-
-	template, err := template.ParseFiles(files...)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	err = template.ExecuteTemplate(writer, "admin-dashboard", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
-	err = template.ExecuteTemplate(writer, "status-message-clear-oob", nil)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
-	err = template.ExecuteTemplate(writer, "header-status-oob", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
+	renderTemplates(
+		writer,
+		[]string{
+			"./templates/admin-dashboard.html",
+			"./templates/status-message.html",
+			"./templates/header-status.html",
+		},
+		TemplateRender{"admin-dashboard", data},
+		TemplateRender{"status-message-clear-oob", nil},
+		TemplateRender{"header-status-oob", data},
+	)
 }
 
 func postLoginStudent(writer http.ResponseWriter, request *http.Request) {
@@ -94,38 +75,18 @@ func postLoginStudent(writer http.ResponseWriter, request *http.Request) {
 		IsAdmin:     false,
 	}
 
-	files := []string{
-		"./templates/view-schedule.html",
-		"./templates/week-view.html",
-		"./templates/status-message.html",
-		"./templates/header-status.html",
-	}
-
-	template, err := template.ParseFiles(files...)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	err = template.ExecuteTemplate(writer, "view-schedule", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
-	err = template.ExecuteTemplate(writer, "status-message-clear-oob", nil)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
-	err = template.ExecuteTemplate(writer, "header-status-oob", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
+	renderTemplates(
+		writer,
+		[]string{
+			"./templates/view-schedule.html",
+			"./templates/week-view.html",
+			"./templates/status-message.html",
+			"./templates/header-status.html",
+		},
+		TemplateRender{"view-schedule", data},
+		TemplateRender{"status-message-clear-oob", nil},
+		TemplateRender{"header-status-oob", data},
+	)
 }
 
 func getHome(writer http.ResponseWriter, request *http.Request) {
@@ -159,26 +120,17 @@ func getHome(writer http.ResponseWriter, request *http.Request) {
 		}
 	}
 
-	files := []string{
-		"./templates/base.html",
-		"./templates/header-status.html",
-		"./templates/view-schedule.html",
-		"./templates/week-view.html",
-		"./templates/admin-dashboard.html",
-	}
-
-	template, err := template.ParseFiles(files...)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	err = template.ExecuteTemplate(writer, "base", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
+	renderTemplates(
+		writer,
+		[]string{
+			"./templates/base.html",
+			"./templates/header-status.html",
+			"./templates/view-schedule.html",
+			"./templates/week-view.html",
+			"./templates/admin-dashboard.html",
+		},
+		TemplateRender{"base", data},
+	)
 }
 
 func getSchedule(writer http.ResponseWriter, request *http.Request) {
@@ -201,37 +153,18 @@ func getSchedule(writer http.ResponseWriter, request *http.Request) {
 		IsAdmin:     user == AdminUser,
 	}
 
-	files := []string{
-		"./templates/view-schedule.html",
-		"./templates/week-view.html",
-		"./templates/status-message.html",
-		"./templates/header-status.html",
-	}
-
-	template, err := template.ParseFiles(files...)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	err = template.ExecuteTemplate(writer, "view-schedule", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
-	err = template.ExecuteTemplate(writer, "status-message-clear-oob", nil)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
-	err = template.ExecuteTemplate(writer, "header-status-oob", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
+	renderTemplates(
+		writer,
+		[]string{
+			"./templates/view-schedule.html",
+			"./templates/week-view.html",
+			"./templates/status-message.html",
+			"./templates/header-status.html",
+		},
+		TemplateRender{"view-schedule", data},
+		TemplateRender{"status-message-clear-oob", nil},
+		TemplateRender{"header-status-oob", data},
+	)
 }
 
 func getScheduleEdit(writer http.ResponseWriter, request *http.Request) {
@@ -254,37 +187,18 @@ func getScheduleEdit(writer http.ResponseWriter, request *http.Request) {
 		IsAdmin:     user == AdminUser,
 	}
 
-	files := []string{
-		"./templates/edit-schedule.html",
-		"./templates/week-view.html",
-		"./templates/status-message.html",
-		"./templates/header-status.html",
-	}
-
-	template, err := template.ParseFiles(files...)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	err = template.ExecuteTemplate(writer, "edit-schedule", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
-	err = template.ExecuteTemplate(writer, "status-message-clear-oob", nil)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
-	err = template.ExecuteTemplate(writer, "header-status-oob", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
+	renderTemplates(
+		writer,
+		[]string{
+			"./templates/edit-schedule.html",
+			"./templates/week-view.html",
+			"./templates/status-message.html",
+			"./templates/header-status.html",
+		},
+		TemplateRender{"edit-schedule", data},
+		TemplateRender{"status-message-clear-oob", nil},
+		TemplateRender{"header-status-oob", data},
+	)
 }
 
 func postScheduleSubmit(writer http.ResponseWriter, request *http.Request) {
@@ -373,35 +287,18 @@ func postScheduleSubmit(writer http.ResponseWriter, request *http.Request) {
 		[]string{"Schedule has been submitted for admin review"},
 	}
 
-	viewScheduleTemplate, err := template.ParseFiles(
-		"./templates/view-schedule.html",
-		"./templates/week-view.html",
-		"./templates/status-message.html",
-		"./templates/header-status.html",
+	renderTemplates(
+		writer,
+		[]string{
+			"./templates/view-schedule.html",
+			"./templates/week-view.html",
+			"./templates/status-message.html",
+			"./templates/header-status.html",
+		},
+		TemplateRender{"view-schedule", weekData},
+		TemplateRender{"status-message-clear-oob", statusData},
+		TemplateRender{"header-status-oob", weekData},
 	)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	err = viewScheduleTemplate.ExecuteTemplate(writer, "view-schedule", weekData)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
-	err = viewScheduleTemplate.ExecuteTemplate(writer, "status-message-oob", statusData)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
-	err = viewScheduleTemplate.ExecuteTemplate(writer, "header-status-oob", weekData)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
 }
 
 func deleteSchedule(writer http.ResponseWriter, request *http.Request) {
@@ -424,38 +321,18 @@ func deleteSchedule(writer http.ResponseWriter, request *http.Request) {
 		IsAdmin:     user == AdminUser,
 	}
 
-	files := []string{
-		"./templates/view-schedule.html",
-		"./templates/week-view.html",
-		"./templates/status-message.html",
-		"./templates/header-status.html",
-	}
-
-	template, err := template.ParseFiles(files...)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	err = template.ExecuteTemplate(writer, "view-schedule", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
-	err = template.ExecuteTemplate(writer, "status-message-clear-oob", nil)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
-	err = template.ExecuteTemplate(writer, "header-status-oob", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
+	renderTemplates(
+		writer,
+		[]string{
+			"./templates/view-schedule.html",
+			"./templates/week-view.html",
+			"./templates/status-message.html",
+			"./templates/header-status.html",
+		},
+		TemplateRender{"view-schedule", data},
+		TemplateRender{"status-message-clear-oob", nil},
+		TemplateRender{"header-status-oob", data},
+	)
 }
 
 func getAdmin(writer http.ResponseWriter, request *http.Request) {
@@ -478,29 +355,15 @@ func getAdmin(writer http.ResponseWriter, request *http.Request) {
 		StudentSchedule: getScheduleFromMemory(),
 	}
 
-	files := []string{
-		"./templates/admin-dashboard.html",
-		"./templates/header-status.html",
-	}
-
-	template, err := template.ParseFiles(files...)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	err = template.ExecuteTemplate(writer, "admin-dashboard", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
-	err = template.ExecuteTemplate(writer, "header-status-oob", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
+	renderTemplates(
+		writer,
+		[]string{
+			"./templates/admin-dashboard.html",
+			"./templates/header-status.html",
+		},
+		TemplateRender{"admin-dashboard", data},
+		TemplateRender{"header-status-oob", data},
+	)
 }
 
 func getAdminView(writer http.ResponseWriter, request *http.Request) {
@@ -527,44 +390,26 @@ func getAdminView(writer http.ResponseWriter, request *http.Request) {
 		IsAdmin:     user == AdminUser,
 	}
 
-	files := []string{
-		"./templates/view-schedule.html",
-		"./templates/week-view.html",
-		"./templates/status-message.html",
-		"./templates/header-status.html",
-	}
-
-	template, err := template.ParseFiles(files...)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	err = template.ExecuteTemplate(writer, "view-schedule", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
-	err = template.ExecuteTemplate(writer, "status-message-clear-oob", nil)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
-	err = template.ExecuteTemplate(writer, "header-status-oob", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
+	renderTemplates(
+		writer,
+		[]string{
+			"./templates/view-schedule.html",
+			"./templates/week-view.html",
+			"./templates/status-message.html",
+			"./templates/header-status.html",
+		},
+		TemplateRender{"view-schedule", data},
+		TemplateRender{"status-message-clear-oob", nil},
+		TemplateRender{"header-status-oob", data},
+	)
 }
 
 func putAdminApprove(writer http.ResponseWriter, request *http.Request) {
 	user, ok := currentUser(request)
 	if !ok {
-		user = StudentUser
-		createSession(writer, user)
+		log.Print("401 Unauthorized Access Attempted")
+		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
+		return
 	} else if user != AdminUser {
 		log.Print("401 Unauthorized Access Attempted")
 		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
@@ -577,7 +422,7 @@ func putAdminApprove(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	approveSchedule(request.Form["approval-comments"][0])
+	approveSchedule(request.FormValue("approval-comments"))
 
 	data := AdminFrontendData{
 		EditMode:        false,
@@ -587,36 +432,23 @@ func putAdminApprove(writer http.ResponseWriter, request *http.Request) {
 		StudentSchedule: getScheduleFromMemory(),
 	}
 
-	files := []string{
-		"./templates/admin-dashboard.html",
-		"./templates/header-status.html",
-	}
-
-	template, err := template.ParseFiles(files...)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	err = template.ExecuteTemplate(writer, "admin-dashboard", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
-	err = template.ExecuteTemplate(writer, "header-status-oob", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
+	renderTemplates(
+		writer,
+		[]string{
+			"./templates/admin-dashboard.html",
+			"./templates/header-status.html",
+		},
+		TemplateRender{"admin-dashboard", data},
+		TemplateRender{"header-status-oob", data},
+	)
 }
 
 func putAdminReject(writer http.ResponseWriter, request *http.Request) {
 	user, ok := currentUser(request)
 	if !ok {
-		user = StudentUser
-		createSession(writer, user)
+		log.Print("401 Unauthorized Access Attempted")
+		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
+		return
 	} else if user != AdminUser {
 		log.Print("401 Unauthorized Access Attempted")
 		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
@@ -629,7 +461,7 @@ func putAdminReject(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	rejectSchedule(request.Form["approval-comments"][0])
+	rejectSchedule(request.FormValue("approval-comments"))
 
 	data := AdminFrontendData{
 		EditMode:        false,
@@ -639,27 +471,13 @@ func putAdminReject(writer http.ResponseWriter, request *http.Request) {
 		StudentSchedule: getScheduleFromMemory(),
 	}
 
-	files := []string{
-		"./templates/admin-dashboard.html",
-		"./templates/header-status.html",
-	}
-
-	template, err := template.ParseFiles(files...)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	err = template.ExecuteTemplate(writer, "admin-dashboard", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
-
-	err = template.ExecuteTemplate(writer, "header-status-oob", data)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-	}
+	renderTemplates(
+		writer,
+		[]string{
+			"./templates/admin-dashboard.html",
+			"./templates/header-status.html",
+		},
+		TemplateRender{"admin-dashboard", data},
+		TemplateRender{"header-status-oob", data},
+	)
 }

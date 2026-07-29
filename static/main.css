@@ -50,7 +50,7 @@ body {
     border-radius: 15px;
     margin-bottom: 40px;
 
-    width: 950px;
+    max-width: 950px;
     height: 210px;
 }
 
