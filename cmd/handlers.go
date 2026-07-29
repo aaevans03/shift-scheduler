@@ -6,11 +6,14 @@ import (
 	"text/template"
 )
 
-type WeekViewData struct {
+type FrontendData struct {
 	Week            Week
 	EditMode        bool
 	ApprovalStatus  string
 	ApprovalMessage string
+
+	CurrentUser UserRole
+	IsAdmin     bool
 }
 
 type StatusMessage struct {
@@ -19,15 +22,125 @@ type StatusMessage struct {
 	Bullets    []string
 }
 
-func getHome(writer http.ResponseWriter, request *http.Request) {
+func postLoginAdmin(writer http.ResponseWriter, request *http.Request) {
+	clearSession(writer, request)
+	createSession(writer, AdminUser)
+
+	// Admin starter screen (you can select)
 
 	memorySchedule := getScheduleFromMemory()
 
-	data := WeekViewData{
+	data := FrontendData{
+		Week:            memorySchedule.SubmittedWeek,
+		EditMode:        false,
+		ApprovalStatus:  "",
+		ApprovalMessage: "",
+
+		CurrentUser: AdminUser,
+		IsAdmin:     true,
+	}
+
+	files := []string{
+		"./templates/admin-dashboard.html",
+		"./templates/status-message.html",
+		"./templates/header-status.html",
+	}
+
+	template, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	err = template.ExecuteTemplate(writer, "admin-dashboard", nil)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	err = template.ExecuteTemplate(writer, "status-message-clear-oob", nil)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	err = template.ExecuteTemplate(writer, "header-status-oob", data)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+}
+
+func postLoginStudent(writer http.ResponseWriter, request *http.Request) {
+	clearSession(writer, request)
+	createSession(writer, StudentUser)
+
+	// Default screen
+
+	memorySchedule := getScheduleFromMemory()
+
+	data := FrontendData{
 		Week:            memorySchedule.SubmittedWeek,
 		EditMode:        false,
 		ApprovalStatus:  memorySchedule.ApprovedStatus,
 		ApprovalMessage: memorySchedule.ApprovalMessage,
+
+		CurrentUser: StudentUser,
+		IsAdmin:     false,
+	}
+
+	files := []string{
+		"./templates/view-schedule.html",
+		"./templates/week-view.html",
+		"./templates/status-message.html",
+		"./templates/header-status.html",
+	}
+
+	template, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	err = template.ExecuteTemplate(writer, "view-schedule", data)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	err = template.ExecuteTemplate(writer, "status-message-clear-oob", nil)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	err = template.ExecuteTemplate(writer, "header-status-oob", data)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+}
+
+func getHome(writer http.ResponseWriter, request *http.Request) {
+	user, ok := currentUser(request)
+	if !ok {
+		user = StudentUser
+		createSession(writer, user)
+	}
+
+	memorySchedule := getScheduleFromMemory()
+
+	data := FrontendData{
+		Week:            memorySchedule.SubmittedWeek,
+		EditMode:        false,
+		ApprovalStatus:  memorySchedule.ApprovedStatus,
+		ApprovalMessage: memorySchedule.ApprovalMessage,
+
+		CurrentUser: user,
+		IsAdmin:     user == AdminUser,
 	}
 
 	files := []string{
@@ -35,6 +148,7 @@ func getHome(writer http.ResponseWriter, request *http.Request) {
 		"./templates/header-status.html",
 		"./templates/view-schedule.html",
 		"./templates/week-view.html",
+		"./templates/admin-dashboard.html",
 	}
 
 	template, err := template.ParseFiles(files...)
@@ -52,14 +166,23 @@ func getHome(writer http.ResponseWriter, request *http.Request) {
 }
 
 func getSchedule(writer http.ResponseWriter, request *http.Request) {
+	user, ok := currentUser(request)
+	if !ok {
+		log.Print("401 Unauthorized Access Attempted")
+		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
 
 	memorySchedule := getScheduleFromMemory()
 
-	data := WeekViewData{
+	data := FrontendData{
 		Week:            memorySchedule.SubmittedWeek,
 		EditMode:        false,
 		ApprovalStatus:  memorySchedule.ApprovedStatus,
 		ApprovalMessage: memorySchedule.ApprovalMessage,
+
+		CurrentUser: user,
+		IsAdmin:     user == AdminUser,
 	}
 
 	files := []string{
@@ -96,14 +219,23 @@ func getSchedule(writer http.ResponseWriter, request *http.Request) {
 }
 
 func getScheduleEdit(writer http.ResponseWriter, request *http.Request) {
+	user, ok := currentUser(request)
+	if !ok {
+		log.Print("401 Unauthorized Access Attempted")
+		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
 
 	memorySchedule := getScheduleFromMemory()
 
-	data := WeekViewData{
+	data := FrontendData{
 		Week:            memorySchedule.SubmittedWeek,
 		EditMode:        true,
 		ApprovalStatus:  memorySchedule.ApprovedStatus,
 		ApprovalMessage: memorySchedule.ApprovalMessage,
+
+		CurrentUser: user,
+		IsAdmin:     user == AdminUser,
 	}
 
 	files := []string{
@@ -140,6 +272,13 @@ func getScheduleEdit(writer http.ResponseWriter, request *http.Request) {
 }
 
 func postScheduleSubmit(writer http.ResponseWriter, request *http.Request) {
+	user, ok := currentUser(request)
+	if !ok {
+		log.Print("401 Unauthorized Access Attempted")
+		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
 	err := request.ParseForm()
 	if err != nil {
 		http.Error(writer, "Invalid form data", http.StatusBadRequest)
@@ -202,11 +341,14 @@ func postScheduleSubmit(writer http.ResponseWriter, request *http.Request) {
 
 	memorySchedule := getScheduleFromMemory()
 
-	weekData := WeekViewData{
+	weekData := FrontendData{
 		Week:            memorySchedule.SubmittedWeek,
 		EditMode:        false,
 		ApprovalStatus:  memorySchedule.ApprovedStatus,
 		ApprovalMessage: memorySchedule.ApprovalMessage,
+
+		CurrentUser: user,
+		IsAdmin:     user == AdminUser,
 	}
 
 	statusData := StatusMessage{

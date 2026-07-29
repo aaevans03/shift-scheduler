@@ -11,6 +11,9 @@ func main() {
 	fileServer := http.FileServer(http.Dir("./static/"))
 	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
 
+	mux.HandleFunc("POST /login/admin", postLoginAdmin)
+	mux.HandleFunc("POST /login/student", postLoginStudent)
+
 	mux.HandleFunc("GET /{$}", getHome)
 	mux.HandleFunc("GET /schedule", getSchedule)
 	mux.HandleFunc("GET /schedule/edit", getScheduleEdit)

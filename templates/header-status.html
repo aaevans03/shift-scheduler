@@ -1,27 +1,54 @@
 {{ define "header-status" }}
-    <div id="header-status" class='{{ if or .EditMode (eq .ApprovalStatus "") }}hidden{{ end }}'>
+<div id="header-status" class='header-status {{ if .EditMode }}hidden{{ end }}'>
         <div
             class='admin-approval
-                {{ if eq .ApprovalStatus "Pending Approval" }}pending{{ end }}
-                {{ if eq .ApprovalStatus "Approved" }}success{{ end }}
-                {{ if eq .ApprovalStatus "Rejected" }}failure{{ end }}'
-        >
-            {{ .ApprovalStatus }}
-        </div>
+                {{ if eq .ApprovalStatus "" }}hidden
+                {{ else if eq .ApprovalStatus "Pending Approval" }}pending
+                {{ else if eq .ApprovalStatus "Approved" }}success
+                {{ else if eq .ApprovalStatus "Rejected" }}failure{{ end }}'
+        >{{ .ApprovalStatus }}</div>
+        {{ if not .IsAdmin }}
+            <button
+                hx-post="/login/admin"
+                hx-target="#view-schedule"
+                hx-swap="outerHTML"
+            >Switch to Admin</button>
+        {{ else }}
+            <button
+                hx-post="/login/student"
+                hx-target="#admin-dashboard"
+                hx-swap="outerHTML"
+            >Switch to Student</button>
+        {{ end }}
     </div>
 {{ end }}
 
 {{ define "header-status-oob" }}
     <div
-        class='{{ if or .EditMode (eq .ApprovalStatus "") }}hidden{{ end }}'
+        class='header-status {{ if .EditMode }}hidden{{ end }}'
         id="header-status"
         hx-swap-oob="outerHTML"
     >
         <div
             class='admin-approval
-                {{ if eq .ApprovalStatus "Pending Approval" }}pending{{ end }}
-                {{ if eq .ApprovalStatus "Approved" }}success{{ end }}
-                {{ if eq .ApprovalStatus "Rejected" }}failure{{ end }}'
+                {{ if eq .ApprovalStatus "" }}hidden
+                {{ else if eq .ApprovalStatus "Pending Approval" }}pending
+                {{ else if eq .ApprovalStatus "Approved" }}success
+                {{ else if eq .ApprovalStatus "Rejected" }}failure{{ end }}'
         >{{ .ApprovalStatus }}</div>
+        {{ if not .IsAdmin }}
+            <button
+                hx-post="/login/admin"
+                hx-target="#view-schedule"
+                hx-swap="outerHTML"
+            >Switch to Admin</button>
+        {{ else }}
+            <button
+                hx-post="/login/student"
+                hx-target="#admin-dashboard"
+                hx-swap="outerHTML"
+            >Switch to Student</button>
+        {{ end }}
+
     </div>
 {{ end }}

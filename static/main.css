@@ -15,9 +15,16 @@ header {
     margin: 15px 0;
 }
 
+.header-status {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
 .admin-approval {
     font-size: 14px;
-    padding: 10px;
+    padding: 7px 15px;
     border-radius: 50px;
 }
 
@@ -37,6 +44,9 @@ body {
     padding: 25px;
     border-radius: 15px;
     margin-bottom: 40px;
+
+    width: 950px;
+    height: 210px;
 }
 
 table {
@@ -118,7 +128,7 @@ td {
 button {
     border: none;
     padding: 7px 15px;
-    width: 100px;
+    min-width: 100px;
     border-radius: 10px;
 
     background-color: rgb(17, 17, 185);
